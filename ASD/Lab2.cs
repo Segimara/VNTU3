@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,26 +9,59 @@ namespace Lab2
 {
     internal class Lab2
     {
-       public static void Main1()
+        static Random random = new Random();
+        public static void Main()
         {
 
         }
-
-    }
-
-    internal class m_List<T>
-    {
-        private m_Node<T> head;
-        private class m_Node<T>
+        public static int[] RandomFill(int Count, int from, int to)
         {
-            private m_Node<T>? _node;
-            private T? _value;
-            public m_Node(T _value, m_Node<T> _next)
+            
+            int[] ret = new int[Count];
+            for (int i = 0; i < Count; i++)
             {
-
+                ret[i] = random.Next(from, to);
+            }
+            return ret;
+        }
+        public static void MainQueue()
+        {
+            Queue<int> src = new Queue<int>(RandomFill(100, -10, 10));
+            int sum = 0;
+            for (int i = 0; i < src.Count; i++)
+            {
+                sum += src.Dequeue();
+            }
+            Console.WriteLine((double)sum / (double)src.Count);
+        }
+        public static void MainDeQueue()
+        {
+            LinkedList<int> src = new LinkedList<int>(RandomFill(100, -10, 10));
+            int sum = 0;
+            for (int i = 0; i < src.Count; i++)
+            {
+                if (random.Next() % 2 == 0 )
+                {
+                    sum += src.Last();
+                    src.RemoveLast();
+                }
+                else
+                {
+                    sum += src.First();
+                    src.RemoveFirst();
+                }
             }
         }
+        public static void MainStack()
+        {
+            Stack<int> src = new Stack<int>(RandomFill(100, -10, 10));
+            int sum = 0;
+            for (int i = 0; i < src.Count; i++)
+            {
+                sum += Math.Abs(src.Pop());
+            }
+            Console.WriteLine((double)sum / (double)src.Count);
+        }
+        
     }
-
-
 }

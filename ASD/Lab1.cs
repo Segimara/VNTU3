@@ -1,6 +1,6 @@
 ﻿class Lab1
 {
-    public static void Main()
+    public static void Main1()
     {
         Console.WriteLine(GetNumberOfLeter("ggdgdv", 'h'));
         Console.WriteLine(GetNumberOfLeter("sgrsfvhhhh", 's'));

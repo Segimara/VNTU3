@@ -82,14 +82,10 @@ namespace Lab2
             value = tmp.value;
             reg = tmp.reg;
             state = tmp.state;
-            //if (tmp.isNegative())
-            //{
-            //    value.Invert();
-            //}
         }
         private void SimplifyTherdRegComplimentary()
         {
-            throw new NotImplementedException();
+            reg.RemoveAt(0);
         }
         public BinaryNum Convert(State st)
         {

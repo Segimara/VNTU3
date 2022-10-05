@@ -271,18 +271,6 @@ namespace Lab2
             return $"{reg.toString()}.{value.toString()}";
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
     public static class HelpExtensions
     {
         public static int Invert(this int num)

@@ -306,18 +306,6 @@ namespace Lab2
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
     public static class HelpExtensions
     {
         public static int Invert(this int num)

@@ -270,6 +270,41 @@ namespace Lab2
         {
             return $"{reg.toString()}.{value.toString()}";
         }
+        public static void MainProg()
+        {
+           while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+            {
+                Console.WriteLine("Enter expresion like: {num1} {+|-} {num2}");
+                try
+                {
+                    var SplitedExpresion = Console.ReadLine().Split(" ");
+                    int num1 = int.Parse(SplitedExpresion[0]);
+                    int num2 = int.Parse(SplitedExpresion[2]);
+                    switch (SplitedExpresion[1])
+                    {
+                        case "+":
+                            {
+                                Console.WriteLine(Add(new BinaryNum(num1), new BinaryNum(num2)));
+                                break;
+                            }
+                        case "-":
+                            {
+                                Console.WriteLine(Add(new BinaryNum(num1), new BinaryNum(-num2)));
+                                break;
+                            }
+                        default:
+                            {
+                                Console.WriteLine("Unsupported operation");
+                                break;
+                            }
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Invalid Data");
+                }
+            }
+        }
     }
 
 

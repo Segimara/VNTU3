@@ -12,11 +12,13 @@ namespace Lab2
         static Random random = new Random();
         public static void Main()
         {
-
+            MainQueue();
+            MainDeQueue();
+            MainStack();
         }
         public static int[] RandomFill(int Count, int from, int to)
         {
-            
+
             int[] ret = new int[Count];
             for (int i = 0; i < Count; i++)
             {
@@ -32,7 +34,7 @@ namespace Lab2
             {
                 sum += src.Dequeue();
             }
-            Console.WriteLine((double)sum / (double)src.Count);
+            Console.WriteLine("Середнє арифметичне чисел з черги: \t\t" + ((double)sum / (double)src.Count).ToString());
         }
         public static void MainDeQueue()
         {
@@ -40,7 +42,7 @@ namespace Lab2
             int sum = 0;
             for (int i = 0; i < src.Count; i++)
             {
-                if (random.Next() % 2 == 0 )
+                if (random.Next() % 2 == 0)
                 {
                     sum += src.Last();
                     src.RemoveLast();
@@ -51,6 +53,7 @@ namespace Lab2
                     src.RemoveFirst();
                 }
             }
+            Console.WriteLine("Сумма елементiв подвiйної черги: \t\t" + ((double)sum / (double)src.Count).ToString());
         }
         public static void MainStack()
         {
@@ -60,8 +63,8 @@ namespace Lab2
             {
                 sum += Math.Abs(src.Pop());
             }
-            Console.WriteLine((double)sum / (double)src.Count);
+            Console.WriteLine("Середнє арифметичне чисел за модулем з стеку:  \t" + ((double)sum / (double)src.Count).ToString());
         }
-        
+
     }
 }

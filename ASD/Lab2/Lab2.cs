@@ -10,7 +10,7 @@ namespace Lab2
     internal class Lab2
     {
         static Random random = new Random();
-        public static void Main()
+        public static void Main3()
         {
             MainQueue();
             MainDeQueue();

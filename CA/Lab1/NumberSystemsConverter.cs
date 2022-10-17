@@ -35,7 +35,7 @@ namespace Lab1
                 {
                     dNumber *= to;
                     TwoStrings = dNumber.ToString().Split('.', ',');
-
+                    
                     res += TwoStrings[0].NumberToLetter();
                       
                     dNumber = double.Parse($"0,{TwoStrings[1]}");

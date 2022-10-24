@@ -16,8 +16,8 @@ namespace Lab2
     public class BinaryNum
     {
         private State state;
-        private List<int> reg;
-        private List<int> value;
+        public List<int> reg;
+        public List<int> value;
         public List<int> RawNumber
         {
             get

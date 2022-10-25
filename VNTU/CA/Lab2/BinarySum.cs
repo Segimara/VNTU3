@@ -59,7 +59,7 @@ namespace Lab2
         }
         private void SimplifyTherdReg()
         {
-            State tmp = AskReg();
+            State tmp = State.conversed;
             if (tmp == State.conversed)
             {
                 SimplifyTherdRegConversed();
@@ -153,6 +153,16 @@ namespace Lab2
         {
             return reg.Contains(1) && reg.Contains(0);
         }
+        public BinaryNum GetInvertSign()
+        {
+            BinaryNum res = new BinaryNum(this.ToString());
+            res.InvertSign();
+            return res;
+        }
+        public void InvertSign()
+        {
+            reg.Invert();
+        }
         public bool isNegative()
         {
             return reg.Contains(1);
@@ -164,6 +174,20 @@ namespace Lab2
                 this.value.Insert(0, 0);
             }
         }
+        public int ToNum()
+        {
+            if (state == State.conversed)
+                this.ToConversed();
+            if (state == State.complimentary)
+                this.ToComplimentary_BiDirect();
+            int num = int.Parse(Lab1.NumberSystemsConverter.toNumberBase(value.ToRawString(), 2, 10));
+            if (reg[0] == 1)
+            {
+                return -num;
+            }
+            return num;
+        }
+
 
         public static BinaryNum operator +(BinaryNum left, BinaryNum right)
         {
@@ -188,9 +212,13 @@ namespace Lab2
                 return OnlyPosAdd(left, right);
             }
         }
+        public static BinaryNum Minus(BinaryNum num1, BinaryNum num2)
+        {
+            return Add(num1, num2.GetInvertSign());
+        }
         public static BinaryNum NegativeAdd(BinaryNum left, BinaryNum right)
         {
-            State tmpSt = AskReg();
+            State tmpSt = State.conversed;
             BinaryNum ret = new BinaryNum(StringAdd(left.Convert(tmpSt), right.Convert(tmpSt)), tmpSt);
             if (ret.isNegative())
             {
@@ -268,7 +296,7 @@ namespace Lab2
         }
         public override string? ToString()
         {
-            return $"{reg.toString()}.{value.toString()}";
+            return $"{reg.ToRawString()}.{value.ToRawString()}";
         }
         public static void MainProg()
         {
@@ -328,7 +356,7 @@ namespace Lab2
             }
             return num;
         }
-        public static string toString(this List<int> src)
+        public static string ToRawString(this List<int> src)
         {
             StringBuilder ret = new StringBuilder();
             foreach (var obj in src)

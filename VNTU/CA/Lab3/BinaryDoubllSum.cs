@@ -42,7 +42,7 @@ namespace Lab3
             Pow = new BinaryNum(Math.Abs(powOdds));
             return new BinumDoblSum(Mant, Pow);
         }
-
+ 
         public override string ToString()
         {
             return mantica.ToString() + "^" + power.value.ToRawString();

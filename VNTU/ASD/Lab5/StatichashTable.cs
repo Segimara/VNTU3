@@ -11,7 +11,7 @@ namespace ASD.Lab5
         private List<LinkedList<Key>> Keys = new List<LinkedList<Key>>(13);
         private List<LinkedList<T>> Values = new List<LinkedList<T>>(13);
 
-        public void Add((Key, T) elem)
+        public bool Add((Key, T) elem)
         {
             int index = elem.Item1.GetHashCode() % 13;
             if (Values[index] == null)
@@ -22,9 +22,15 @@ namespace ASD.Lab5
             {
                 Keys[index] = new LinkedList<Key>();
             }
-            Keys[index].AddFirst(elem.Item1);
-            Values[index].AddFirst(elem.Item2);
+            if (!(Keys[index].Select(m => m.GetHashCode()).Contains(elem.Item1.GetHashCode())))
+            {
+                Keys[index].AddLast(elem.Item1);
+                Values[index].AddLast(elem.Item2);
+                return true;    
+            }
+            return false;
         }
+        //public bool Remove()
         public T this[Key key]
         {
             get

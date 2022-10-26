@@ -34,12 +34,14 @@ namespace Lab3
             if (powOdds >= 0)
             {
                 Mant = BinaryNum.Add(num1.mantica, num2.mantica.ShiftByNum(Math.Abs(powOdds)));
+                Pow = new BinaryNum(num1.power.ToString());
             }
             else
             {
                 Mant = BinaryNum.Add(num1.mantica.ShiftByNum(Math.Abs(powOdds)), num2.mantica);
+                Pow = new BinaryNum(num2.power.ToString());
             }
-            Pow = new BinaryNum(Math.Abs(powOdds));
+            
             return new BinumDoblSum(Mant, Pow);
         }
  
@@ -72,9 +74,10 @@ namespace Lab3
                             }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Invalid Data");
+                    Console.WriteLine(ex.StackTrace);
                 }
             }
         }
@@ -89,7 +92,7 @@ namespace Lab3
             for (int i = 0; i < count; i++)
             {
                 res.value.Insert(0, 0);
-                res.value.Remove(res.value.Count-1);
+                res.value.RemoveAt(res.value.Count-1);
             }
             return res;
         }

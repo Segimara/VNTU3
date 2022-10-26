@@ -102,7 +102,14 @@ namespace Lab2
                 return this;
             }
             value = value.Invert();
-            state = State.conversed;
+            if (state == State.conversed)
+            {
+                state = State.straight;
+            }
+            else if (state == State.straight)
+            {
+                state = State.conversed;
+            }
             return this;
         }
         public BinaryNum ToComplimentary_BiDirect()

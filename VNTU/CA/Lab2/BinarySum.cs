@@ -59,7 +59,7 @@ namespace Lab2
         }
         private void SimplifyTherdReg()
         {
-            State tmp = State.conversed;
+            State tmp = State.complimentary;
             if (tmp == State.conversed)
             {
                 SimplifyTherdRegConversed();
@@ -145,8 +145,8 @@ namespace Lab2
         {
             if (CheckToRollover())
             {
-                Console.WriteLine("#---Переповнення розрядної сiтки---#");
-                Console.WriteLine($"\t{this}");
+                //Console.WriteLine("#---Переповнення розрядної сiтки---#");
+                //Console.WriteLine($"\t{this}");
                 value.Insert(0, reg[reg.Count - 1]);
                 reg.RemoveAt(reg.Count - 1);
                 reg.Insert(reg.Count, reg[reg.Count - 1]);
@@ -225,7 +225,7 @@ namespace Lab2
         }
         public static BinaryNum NegativeAdd(BinaryNum left, BinaryNum right)
         {
-            State tmpSt = State.conversed;
+            State tmpSt = State.complimentary;
             BinaryNum ret = new BinaryNum(StringAdd(left.Convert(tmpSt), right.Convert(tmpSt)), tmpSt);
             if (ret.isNegative())
             {

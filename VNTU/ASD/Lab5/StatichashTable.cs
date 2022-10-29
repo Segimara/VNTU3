@@ -11,6 +11,15 @@ namespace ASD.Lab5
         private List<List<Key>> Keys = new List<List<Key>>(13);
         private List<List<T>> Values = new List<List<T>>(13);
 
+        public StatichashTable()
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                Keys.Add(null);
+                Values.Add(null);
+            }
+        }
+
         public bool Add((Key, T) elem)
         {
             int index = getHash(elem.Item1);
@@ -64,28 +73,159 @@ namespace ASD.Lab5
         {
             return key.GetHashCode() % 13;
         }
-        public void FillRandom(int count = 8)
+
+        public override string? ToString()
         {
-            Random r = new Random();
-
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("{\n");
+            for (int i = 0; i < Keys.Count; i++)
+            {
+                
+                stringBuilder.Append($"{i} - ");
+                if (Keys[i] != null)
+                {
+                    stringBuilder.Append("{");
+                    for (int j = 0; j < Keys[i].Count; j++)
+                    {
+                        stringBuilder.Append(Keys[i][j]);
+                        stringBuilder.Append(" | ");
+                        stringBuilder.Append(Values[i][j]);
+                        if (j != Keys[i].Count - 1)
+                            stringBuilder.Append(", ");
+                    }
+                    stringBuilder.Append("}");
+                }
+                else
+                {
+                    stringBuilder.Append("null");
+                }
+                stringBuilder.Append("\n");
+            }
+            stringBuilder.Append("}\n");
+            return stringBuilder.ToString();
         }
-
     }
-
-
 
     class Lab5
     {
+        static StatichashTable<int, int> table = new StatichashTable<int, int>();
+        public static void FillRandom(int count = 8)
+        {
+            Random r = new Random();
+
+            for (int i = 0; i < count; i++)
+            {
+                table.Add((i, r.Next(1000)));
+            }
+        }
         public static void Main5()
         {
-            while(true)
+            bool work = false;
+            while(!work)
             {
                 PrintMenu();
+                work = Actions(Console.ReadKey().Key);
             }
         }
         public static void PrintMenu()
         {
-            Console.WriteLine();
+            Console.WriteLine("Print Table - 1");
+            Console.WriteLine("Fill table with random values - 2");
+            Console.WriteLine("Add to table - 3");
+            Console.WriteLine("Remove from table - 4");
+            Console.WriteLine("Get from table - 5");
+            Console.WriteLine("Clear table - 6");
+            Console.WriteLine("End program - ESC");
+        }
+        public static bool Actions(ConsoleKey id)
+        {
+            switch (id)
+            {
+                case (ConsoleKey.D1) :
+                    {
+                        Console.WriteLine("");
+                        Console.WriteLine(table.ToString());
+                        break;
+                    }
+                case (ConsoleKey.D2):
+                    {
+                        Console.WriteLine("");
+                        try
+                        {
+                            
+                            Console.WriteLine("Enter count of random");
+                            FillRandom(int.Parse(Console.ReadLine()));
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("You enter not int number!");
+                        }
+                        break;
+                    }
+                case (ConsoleKey.D3):
+                    {
+                        Console.WriteLine("");
+                        try
+                        {
+                            Console.WriteLine("Enter Key");
+                            int key = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Enter Value");
+                            int value = int.Parse(Console.ReadLine());
+                            table.Add((key, value));
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("You enter not int number!");
+                        }
+                        break;
+                    }
+                case (ConsoleKey.D4):
+                    {
+                        Console.WriteLine("");
+                        try
+                        {
+                            Console.WriteLine("Enter Key");
+                            int key = int.Parse(Console.ReadLine());
+                            table.Remove(key);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("You enter not int number!");
+                        }
+                        break;
+                    }
+                case (ConsoleKey.D5):
+                    {
+                        Console.WriteLine("");
+                        try
+                        {
+                            Console.WriteLine("Enter Key");
+                            int key = int.Parse(Console.ReadLine());
+                            Console.WriteLine(table[key]);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("You enter not int number!");
+                        }
+                        break;
+                    }
+                case (ConsoleKey.D6):
+                    {
+                        Console.WriteLine("");
+                        table = new StatichashTable<int, int>();
+                        break;
+                    }
+                case (ConsoleKey.Escape):
+                    {
+                        return true;
+                    }
+                default:
+                    {
+                        Console.WriteLine("\n Invalid Key");
+                        break;
+                    }
+            }
+            return false;
         }
     }
 }

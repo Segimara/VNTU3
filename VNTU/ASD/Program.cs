@@ -11,7 +11,7 @@ namespace ASD
 
         public static void Main()
         {
-            Lab5.Lab5.Main5();
+            Lab6.Lab6.Main6();
         }
     }
 }

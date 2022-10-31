@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ASD.Lab6
 {
@@ -12,9 +14,15 @@ namespace ASD.Lab6
         public String Name;
         public int BornYear;
         public int Grade;
-        Student(String name, int bornYear, int grade)
+        public Student(String name, int bornYear, int grade)
         {
-
+            Name = name;
+            BornYear = bornYear;
+            Grade = grade;
+        }
+        public override string ToString()
+        {
+            return $"|{Name}, {BornYear}, {Grade}|";
         }
     }
     enum Treetype
@@ -55,71 +63,85 @@ namespace ASD.Lab6
             {
                 Add(student, (m) =>
                 {
-                    return m.Grade < student.Grade;
+                    return m.Grade > student.Grade;
                 });
             }
             if (type == Treetype.ByYear)
             {
                 Add(student, m =>
                 {
-                    return m.BornYear < student.BornYear;
+                    return m.BornYear > student.BornYear;
                 });
             }
         }
+
         private void Add(Student student, Predicate<Student> predicate)
         {
-            Node tmproot = root;
-            while (tmproot != null)
+            if (root == null)                          // Found a leaf?    
             {
-                if (predicate.Invoke(tmproot.Value))
+                root = new Node(student);                          // Found it! Add the new node as the new leaf.
+                return;
+            }
+            Node tmp = root;
+            while(tmp.LeftTree != null && tmp.RightTree != null)
+            {
+                if (predicate.Invoke(tmp.Value))
                 {
-                    tmproot = tmproot.LeftTree;
+                    tmp = tmp.LeftTree;
                 }
                 else
                 {
-                    tmproot = tmproot.RightTree;
+                    tmp = tmp.RightTree;
                 }
             }
-            tmproot = new Node(student);
+            if (predicate.Invoke(tmp.Value))
+            {
+                tmp.LeftTree = new Node(student);
+            }
+            else
+            {
+                tmp.RightTree = new Node(student);
+            }
         }
+        
         private Node Restruct(m_BinnaryTree tree)
         {
             return null;
         }
-        public override string ToString()
-        {
-            return RecursToString(root, new StringBuilder()).ToString();
-        }
 
-        private StringBuilder RecursToString(Node node, StringBuilder stringBuilder)
+        public void Print()
+        {
+            Print(root);
+        }
+        private void Print(Node node)
         {
             if (node == null)
             {
-                return stringBuilder;
+                return;
             }
-            stringBuilder.Append(node.Value);
-            stringBuilder.Append( RecursToString(node.LeftTree, stringBuilder).ToString());
-            stringBuilder.Append( RecursToString(node.RightTree, stringBuilder).ToString());
-            return stringBuilder;
+            Console.WriteLine(node.Value.ToString());
+            Print(node.LeftTree);
+            Print(node.RightTree);
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     internal class Lab6
     {
+        static m_BinnaryTree tree = new m_BinnaryTree();
+        public static void Main6()
+        {
+            tree = RandomFill(20);
+            tree.Print();
+        }
+        public static m_BinnaryTree RandomFill(int count)
+        {
+            Random random = new Random();
+            m_BinnaryTree ret = new m_BinnaryTree();
+            for (int i = count; i > 0; i--)
+            {
+                ret.Add(new Student($"name{i}", 2000 + i, random.Next(100)));
+            }
+            return ret;
+        }
     }
 }

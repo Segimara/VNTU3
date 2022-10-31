@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -22,7 +23,7 @@ namespace ASD.Lab6
         }
         public override string ToString()
         {
-            return $"|{Name}, {BornYear}, {Grade}|";
+            return $"{Name}, {BornYear}, {Grade}";
         }
     }
     enum Treetype
@@ -32,9 +33,10 @@ namespace ASD.Lab6
     }
     class m_BinnaryTree
     {
-        class Node
+        public class Node
         {
             public Student Value;
+            public Node SorceNode;
             public Node LeftTree;
             public Node RightTree;
 
@@ -48,67 +50,71 @@ namespace ASD.Lab6
 
         private Node root;
         private Treetype type;  
-        public m_BinnaryTree(){}
+        public m_BinnaryTree(){ type = Treetype.ByGrade; }
         public m_BinnaryTree(Student student, Treetype type = Treetype.ByGrade)
         {
             root = new Node(student);
         }
         public m_BinnaryTree(m_BinnaryTree tree)
         {
-            root = Restruct(tree);
+            List<Student> students = tree.ToArray();
+            if (tree.type == Treetype.ByGrade)
+                type = Treetype.ByYear;
+            else if (tree.type == Treetype.ByYear)
+                type = Treetype.ByGrade;
+            foreach (var item in students)
+            {
+                this.Add(item);
+            }
         }
         public void Add(Student student)
         {
             if (type == Treetype.ByGrade)
             {
-                Add(student, (m) =>
+                root = Add(root, student, (m) =>
                 {
                     return m.Grade > student.Grade;
                 });
             }
             if (type == Treetype.ByYear)
             {
-                Add(student, m =>
+                root = Add(root, student, m =>
                 {
                     return m.BornYear > student.BornYear;
                 });
             }
         }
 
-        private void Add(Student student, Predicate<Student> predicate)
+        private Node Add(Node node, Student student, Predicate<Student> predicate)
         {
-            if (root == null)                          // Found a leaf?    
+            if (node == null)
             {
-                root = new Node(student);                          // Found it! Add the new node as the new leaf.
-                return;
+                node = new Node(student);
+                return node;
             }
-            Node tmp = root;
-            while(tmp.LeftTree != null && tmp.RightTree != null)
-            {
-                if (predicate.Invoke(tmp.Value))
-                {
-                    tmp = tmp.LeftTree;
-                }
-                else
-                {
-                    tmp = tmp.RightTree;
-                }
-            }
-            if (predicate.Invoke(tmp.Value))
-            {
-                tmp.LeftTree = new Node(student);
-            }
+            if (predicate.Invoke(node.Value))
+                node.LeftTree = Add(node.LeftTree, student, predicate);
             else
-            {
-                tmp.RightTree = new Node(student);
-            }
+                node.RightTree = Add(node.RightTree, student, predicate);
+            return node;
         }
         
-        private Node Restruct(m_BinnaryTree tree)
+        public List<Student> ToArray()
         {
-            return null;
+            List<Student> list = new List<Student>();
+            ToArray(list, root);
+            return list;
         }
-
+        private void ToArray(List<Student> list, Node node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            ToArray(list, node.LeftTree);
+            list.Add(node.Value);
+            ToArray(list, node.RightTree);
+        }
         public void Print()
         {
             Print(root);
@@ -123,6 +129,54 @@ namespace ASD.Lab6
             Print(node.LeftTree);
             Print(node.RightTree);
         }
+        
+        public void traverseNodes(StringBuilder sb, String padding, String pointer, Node node, bool hasRightSibling)
+        {
+            if (node != null)
+            {
+                sb.Append("\n");
+                sb.Append(padding);
+                sb.Append(pointer);
+                sb.Append(node.Value);
+
+                StringBuilder paddingBuilder = new StringBuilder(padding);
+                if (hasRightSibling)
+                {
+                    paddingBuilder.Append("│  ");
+                }
+                else
+                {
+                    paddingBuilder.Append("   ");
+                }
+
+                String paddingForBoth = paddingBuilder.ToString();
+                String pointerRight = "└──";
+                String pointerLeft = (node.RightTree != null) ? "├──" : "└──";
+
+                traverseNodes(sb, paddingForBoth, pointerLeft, node.LeftTree, node.RightTree != null);
+                traverseNodes(sb, paddingForBoth, pointerRight, node.RightTree, false);
+            }
+        }
+        public override string ToString()
+        {
+
+            if (root == null)
+            {
+                return "";
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(root.Value);
+
+            String pointerRight = "└──";
+            String pointerLeft = (root.RightTree != null) ? "├──" : "└──";
+
+            traverseNodes(sb, "", pointerLeft, root.LeftTree, root.RightTree != null);
+            traverseNodes(sb, "", pointerRight, root.RightTree, false);
+
+            return sb.ToString();
+        }
+
     }
 
     internal class Lab6
@@ -130,18 +184,21 @@ namespace ASD.Lab6
         static m_BinnaryTree tree = new m_BinnaryTree();
         public static void Main6()
         {
-            tree = RandomFill(20);
-            tree.Print();
+            RandomFill(20);
+            Console.WriteLine(tree.ToString());
+            Console.WriteLine("###################");
+            tree = new m_BinnaryTree(tree);
+            Console.WriteLine("Пересипання дерева");
+            Console.WriteLine("###################");
+            Console.WriteLine(tree.ToString());
         }
-        public static m_BinnaryTree RandomFill(int count)
-        {
+        public static void RandomFill(int count)
+       {
             Random random = new Random();
-            m_BinnaryTree ret = new m_BinnaryTree();
             for (int i = count; i > 0; i--)
             {
-                ret.Add(new Student($"name{i}", 2000 + i, random.Next(100)));
+                tree.Add(new Student($"name{i}", 2000 + random.Next(30), random.Next(100)));
             }
-            return ret;
         }
     }
 }

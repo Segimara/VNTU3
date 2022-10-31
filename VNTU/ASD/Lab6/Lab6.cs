@@ -9,13 +9,18 @@ namespace ASD.Lab6
 {
     class Student
     {
-        String Name;
-        int BornYear;
-        int Grade;
+        public String Name;
+        public int BornYear;
+        public int Grade;
         Student(String name, int bornYear, int grade)
         {
 
         }
+    }
+    enum Treetype
+    {
+        ByGrade,
+        ByYear
     }
     class m_BinnaryTree
     {
@@ -34,8 +39,9 @@ namespace ASD.Lab6
         }
 
         private Node root;
+        private Treetype type;  
         public m_BinnaryTree(){}
-        public m_BinnaryTree(Student student)
+        public m_BinnaryTree(Student student, Treetype type = Treetype.ByGrade)
         {
             root = new Node(student);
         }
@@ -43,17 +49,38 @@ namespace ASD.Lab6
         {
             root = Restruct(tree);
         }
-        public string ToStringWide()
-        {
-            return null;
-        }
-        public string ToStringMud()
-        {
-            return null;
-        }
         public void Add(Student student)
         {
-
+            if (type == Treetype.ByGrade)
+            {
+                Add(student, (m) =>
+                {
+                    return m.Grade < student.Grade;
+                });
+            }
+            if (type == Treetype.ByYear)
+            {
+                Add(student, m =>
+                {
+                    return m.BornYear < student.BornYear;
+                });
+            }
+        }
+        private void Add(Student student, Predicate<Student> predicate)
+        {
+            Node tmproot = root;
+            while (tmproot != null)
+            {
+                if (predicate.Invoke(tmproot.Value))
+                {
+                    tmproot = tmproot.LeftTree;
+                }
+                else
+                {
+                    tmproot = tmproot.RightTree;
+                }
+            }
+            tmproot = new Node(student);
         }
         private Node Restruct(m_BinnaryTree tree)
         {
@@ -61,7 +88,19 @@ namespace ASD.Lab6
         }
         public override string ToString()
         {
-            return ToStringMud();
+            return RecursToString(root, new StringBuilder()).ToString();
+        }
+
+        private StringBuilder RecursToString(Node node, StringBuilder stringBuilder)
+        {
+            if (node == null)
+            {
+                return stringBuilder;
+            }
+            stringBuilder.Append(node.Value);
+            stringBuilder.Append( RecursToString(node.LeftTree, stringBuilder).ToString());
+            stringBuilder.Append( RecursToString(node.RightTree, stringBuilder).ToString());
+            return stringBuilder;
         }
     }
 

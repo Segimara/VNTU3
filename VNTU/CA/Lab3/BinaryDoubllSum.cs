@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Lab2;
+using CA.Lab2;
 
 namespace Lab3
 {

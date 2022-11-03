@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab1
+namespace CA.Lab1
 {
     internal static class NumberSystemsConverter
     {

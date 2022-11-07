@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +13,9 @@ namespace ASD
 
         public static void Main()
         {
-            Lab6.Lab6.Main6();
+            Lab3.Lab3.Main3();
         }
+
+        //implementation of the Kruskal's algorithm  
     }
 }

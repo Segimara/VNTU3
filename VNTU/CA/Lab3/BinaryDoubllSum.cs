@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CA.Lab2;
 
-namespace Lab3
+namespace CA.Lab3
 {
     public class BinumDoblSum
     {

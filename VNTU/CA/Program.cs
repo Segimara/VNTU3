@@ -1,8 +1,8 @@
-﻿using CA.Lab4;
+﻿using CA.Lab3;
 class Program
 {
     public static void Main()
     {
-        BinaryMult.Main4();
+        CA.Lab3.BinumDoblSum.MainProg();
     }
 }   

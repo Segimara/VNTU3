@@ -8,8 +8,20 @@ namespace ASD.Lab7
 {
     internal class Lab7
     {
+        public static void Main7()
+        {
+            int[][] gr = new int[][]
+            {
+                new int[]{0, 3, 0, 0, 1, },
+                new int[]{0, 0, 5, 0, 4, },
+                new int[]{0, 0, 0, 2, 6, },
+                new int[]{0, 0, 2, 0, 7, },
+                new int[]{1, 0, 6, 7, 0, }
+            };
+            Console.WriteLine(Kruskal(gr));
+        }
         //implementation of the Kruskal's algorithm
-        public static int Kruskal(int[,] graph)
+        public static int Kruskal(int[][] graph)
         {
             int n = graph.GetLength(0);
             int[] parent = new int[n];
@@ -24,9 +36,9 @@ namespace ASD.Lab7
             {
                 for (int j = 0; j < n; j++)
                 {
-                    if (graph[i, j] != 0)
+                    if (graph[i][j] != 0)
                     {
-                        edges.Add(new Edge(i, j, graph[i, j]));
+                        edges.Add(new Edge(i, j, graph[i][j]));
                     }
                 }
             }

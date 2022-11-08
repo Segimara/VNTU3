@@ -13,7 +13,7 @@ namespace ASD
 
         public static void Main()
         {
-            Lab3.Lab3.Main3();
+            Lab7.Lab7.Main7();
         }
 
         //implementation of the Kruskal's algorithm  

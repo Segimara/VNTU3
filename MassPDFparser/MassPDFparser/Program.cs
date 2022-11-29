@@ -1,5 +1,6 @@
 ﻿
 using IronPdf;
+using MassPDFparser;
 using System.Diagnostics.SymbolStore;
 using System.Text;
 
@@ -49,22 +50,22 @@ class Program
             //}
             for (int i = 0; i < files.Length;)
             {
-                //int count = 25;
-                //if (i + count > files.Length)
-                //{
-                //    count = files.Length - i;
-                //}
-                //Parallel.For(i, i + count, Parse);
-                //if (i + count > files.Length)
-                //{
-                //    i += files.Length - i;
-                //}
-                //else
-                //{
-                //    i += 25;
-                //}
-                Parse(i);
-                i++;
+                int count = 3;
+                if (i + count > files.Length)
+                {
+                    count = files.Length - i;
+                }
+                Parallel.For(i, i + count, Parse);
+                if (i + count > files.Length)
+                {
+                    i += files.Length - i;
+                }
+                else
+                {
+                    i += 3;
+                }
+                //Parse(i);
+                //i++;
             }
             Console.WriteLine($"###END###");
             Console.WriteLine("---------------------------------------------------------------------------------------------------");
@@ -88,130 +89,140 @@ class Program
 
     static void Parse(int index)
     {
+        //ParseTemp(index, SortByLesson);
+        ParseTemp(index, SortByLang);
+    }
+
+    static void ParseTemp(int index, Func<IEnumerable<string>, ValidateObj> func)
+    {
         try
         {
             PdfDocument document = PdfDocument.FromFile(Globalfiles[index]);
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(document.ExtractTextFromPage(0));
-            stringBuilder.Append(document.ExtractTextFromPage(1));
-            stringBuilder.Append(document.ExtractTextFromPage(2));
-            stringBuilder.Append(document.ExtractTextFromPage(3));
+            stringBuilder.Append(document.ExtractTextFromPage(15));
+            stringBuilder.Append(document.ExtractTextFromPage(16));
+            stringBuilder.Append(document.ExtractTextFromPage(17));
+            stringBuilder.Append(document.ExtractTextFromPage(18));
+            stringBuilder.Append(document.ExtractTextFromPage(20));
+            stringBuilder.Append(document.ExtractTextFromPage(21));
+            stringBuilder.Append(document.ExtractTextFromPage(22));
+            stringBuilder.Append(document.ExtractTextFromPage(23));
+            stringBuilder.Append(document.ExtractTextFromPage(24));
+            stringBuilder.Append(document.ExtractTextFromPage(25));
+            stringBuilder.Append(document.ExtractTextFromPage(26));
             IEnumerable<string> lines = stringBuilder.ToString().Split("\n");
-            bool isLesson = false;
-            bool nextLine = false;
-            string LessonName = "";
-            foreach (var item in lines)
-            {
-                if (item.ToLower().Contains("з дисципліни") || nextLine)
-                {
-                    isLesson = true;
-                    LessonName = item;
-                    LessonName = LessonName.Replace("з дисципліни", "");
-                    LessonName = LessonName.Replace("З дисципліни", "");
-                    foreach (var ch in BannedChars)
-                    {
-                        LessonName = LessonName.Replace(ch, "");
-                    }
-                    LessonName = LessonName.Trim();
-                    if (string.IsNullOrEmpty(LessonName))
-                    {
-                        nextLine = true;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                   
-                    
-                }
-            }
+            ValidateObj LessonObj = func.Invoke(lines);
+            
             //Console.WriteLine(str);
             //Console.WriteLine(SortedPath + @"\" + LessonName + str.Remove(0, str.LastIndexOf(@"\")));
-            if (isLesson)
+            if (LessonObj.isCorrect)
             {
-                if (ExistingLessons.Contains(LessonName))
+                if (ExistingLessons.Contains(LessonObj.LessonName))
                 {
                     //Console.WriteLine(SortedPath + @"\" + LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
                     //Console.WriteLine(LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
                     //Console.WriteLine(Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
-                    File.Copy(Globalfiles[index], SortedPath + @"\" + LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
+                    File.Copy(Globalfiles[index], SortedPath + @"\" + LessonObj.LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
                 }
                 else
                 {
                     //Console.WriteLine(SortedPath + @"\" + LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
                     //Console.WriteLine(LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
                     //Console.WriteLine(Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
-                    ExistingLessons.Add(LessonName);
-                    System.IO.Directory.CreateDirectory(SortedPath + @"\" + LessonName);
-                    File.Copy(Globalfiles[index], SortedPath + @"\" + LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
+                    ExistingLessons.Add(LessonObj.LessonName);
+                    System.IO.Directory.CreateDirectory(SortedPath + @"\" + LessonObj.LessonName);
+                    File.Copy(Globalfiles[index], SortedPath + @"\" + LessonObj.LessonName + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
                     Console.WriteLine(Globalfiles[index]);
                 }
             }
             else
             {
-                //File.Copy(file, NonSortedPath + file.Replace(folder, ""));
-                //File.Copy(str, NonSortedPath + str.Remove(0, str.LastIndexOf(@"\")));
+                //File.Copy(Globalfiles[index], NonSortedPath + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine(Globalfiles[index]);
             Console.WriteLine(ex.Message);
-            //File.Copy(file, NonSortedPath + file.Replace(folder, ""));
-            //File.Copy(str, NonSortedPath + str.Remove(0, str.LastIndexOf(@"\")));
+            //File.Copy(Globalfiles[index], NonSortedPath + Globalfiles[index].Remove(0, Globalfiles[index].LastIndexOf(@"\")));
             countOfCorrupted++;
         }
     }
-
-    //static void Parse(string str)
-    //{
-    //    try
-    //    {
-    //        PdfDocument document = PdfDocument.FromFile(str);
-    //        StringBuilder stringBuilder = new StringBuilder();
-    //        stringBuilder.Append(document.ExtractTextFromPage(0));
-    //        stringBuilder.Append(document.ExtractTextFromPage(1));
-    //        stringBuilder.Append(document.ExtractTextFromPage(2));
-    //        stringBuilder.Append(document.ExtractTextFromPage(3));
-    //        IEnumerable<string> lines = stringBuilder.ToString().Split("\n");
-    //        bool isLesson = false;
-    //        string LessonName = "Бази данних";
-    //        foreach (var item in lines)
-    //        {
-    //            if (item.ToLower().Contains("бази данних"))
-    //            {
-    //                isLesson = true;
-    //                break;
-    //            }
-    //        }
-    //        //Console.WriteLine(str);
-    //        //Console.WriteLine(SortedPath + @"\" + LessonName + str.Remove(0, str.LastIndexOf(@"\")));
-    //        if (isLesson)
-    //        {
-    //            if (ExistingLessons.Contains(LessonName))
-    //            {
-    //                File.Copy(str, SortedPath + @"\" + LessonName + str.Remove(0, str.LastIndexOf(@"\")));
-    //            }
-    //            else
-    //            {
-    //                ExistingLessons.Add(LessonName);
-    //                System.IO.Directory.CreateDirectory(SortedPath + @"\" + LessonName);
-    //                File.Copy(str, SortedPath + @"\" + LessonName + str.Remove(0, str.LastIndexOf(@"\")));
-    //                Console.WriteLine(str);
-    //            }
-    //        }
-    //        else
-    //        {
-    //            //File.Copy(file, NonSortedPath + file.Replace(folder, ""));
-    //            //File.Copy(str, NonSortedPath + str.Remove(0, str.LastIndexOf(@"\")));
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine(str);
-    //        //File.Copy(file, NonSortedPath + file.Replace(folder, ""));
-    //        //File.Copy(str, NonSortedPath + str.Remove(0, str.LastIndexOf(@"\")));
-    //        countOfCorrupted++;
-    //    }
-    //}
+    public static ValidateObj SortByLesson(IEnumerable<string> lines)
+    {
+        ValidateObj result = new ValidateObj();
+        bool nextLine = false;
+        foreach (var item in lines)
+        {
+            if (item.ToLower().Contains("з дисципліни") || nextLine)
+            {
+                result.isCorrect = true;
+                result.LessonName = item;
+                result.LessonName = result.LessonName.Replace("з дисципліни", "");
+                result.LessonName = result.LessonName.Replace("З дисципліни", "");
+                foreach (var ch in BannedChars)
+                {
+                    result.LessonName = result.LessonName.Replace(ch, "");
+                }
+                result.LessonName = result.LessonName.Trim();
+                if (string.IsNullOrEmpty(result.LessonName))
+                {
+                    nextLine = true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    public static ValidateObj SortByTheme(IEnumerable<string> lines)
+    {
+        ValidateObj result = new ValidateObj();
+        bool nextLine = false;
+        foreach (var item in lines)
+        {
+            if (item.ToLower().Contains("на тему") || nextLine)
+            {
+                result.isCorrect = true;
+                result.LessonName = item;
+                result.LessonName = result.LessonName.Replace("на тему", "");
+                result.LessonName = result.LessonName.Replace("На тему", "");
+                result.LessonName = result.LessonName.Replace("на Тему", "");
+                result.LessonName = result.LessonName.Replace("НА ТЕМУ", "");
+                foreach (var ch in BannedChars)
+                {
+                    result.LessonName = result.LessonName.Replace(ch, "");
+                }
+                result.LessonName = result.LessonName.Trim();
+                result.LessonName = result.LessonName.ToLower();
+                if (string.IsNullOrEmpty(result.LessonName))
+                {
+                    nextLine = true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    public static ValidateObj SortByLang(IEnumerable<string> lines)
+    {
+        ValidateObj result = new ValidateObj();
+        bool nextLine = false;
+        bool correct = false;
+        foreach (var item in lines)
+        {
+            if (item.ToLower().Contains("динамічний масив")|| nextLine)
+            {
+                result.isCorrect = true;
+                result.LessonName = "динамічний масив";
+                break;
+            }
+        }
+        return result;
+    }
 }

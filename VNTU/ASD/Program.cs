@@ -11,9 +11,9 @@ namespace ASD
     internal class Program
     {
 
-        public static void Main()
+        public static void Main1()
         {
-            Lab7.Lab7.Main7();
+            
         }
 
         //implementation of the Kruskal's algorithm  
